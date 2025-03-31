@@ -3,9 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
-st.title("Data App Assignment, on Oct 7th")
+st.title("Data App Assignment, by Yanran Sun on March 29th 2025")
 
-st.write("### Input Data and Examples")
+st.write("### Display first 10 rows of the data")
 df = pd.read_csv("Superstore_Sales_utf8.csv", parse_dates=True)
 st.dataframe(df)
 
@@ -29,13 +29,6 @@ st.dataframe(sales_by_month)
 # Here the grouped months are the index and automatically used for the x axis
 st.line_chart(sales_by_month, y="Sales")
 
-st.write("## Your additions")
-st.write("### (1) add a drop down for Category (https://docs.streamlit.io/library/api-reference/widgets/st.selectbox)")
-st.write("### (2) add a multi-select for Sub_Category *in the selected Category (1)* (https://docs.streamlit.io/library/api-reference/widgets/st.multiselect)")
-st.write("### (3) show a line chart of sales for the selected items in (2)")
-st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
-st.write("### (5) use the delta option in the overall profit margin metric to show the difference between the overall average profit margin (all products across all categories)")
-
 import streamlit as st
 import pandas as pd
 
@@ -50,9 +43,11 @@ df = load_data()
 # Title
 st.title("Sales Data Analysis App")
 
+st.write("### (1) add a drop down for Category")
 # (1) Add a dropdown to select Category
 category = st.selectbox("Select Category", df["Category"].unique())
 
+st.write("### (2) add a multi-select for Sub_Category *in the selected Category (1)*")
 # (2) Add a multi-select to choose Sub_Category
 sub_categories = st.multiselect(
     "Select Sub_Category",
@@ -63,6 +58,7 @@ sub_categories = st.multiselect(
 filtered_data = df[(df["Category"] == category) & (df["Sub_Category"].isin(sub_categories))]
 
 # (3) Show a line chart of sales for the selected items
+st.write("### (3) show a line chart of sales for the selected items in (2)")
 if not filtered_data.empty:
     st.header("Sales Trend")
     # Pivot data for line chart
@@ -72,6 +68,8 @@ else:
     st.write("Please select Sub_Category to view the chart.")
 
 # (4) Show three metrics
+st.write("### (4) show three metrics for the selected items in (2): total sales, total profit, and overall profit margin (%)")
+st.write("### (5) use the delta option in the overall profit margin metric to show the difference between the overall average profit margin (all products across all categories)")
 if not filtered_data.empty:
     total_sales = filtered_data["Sales"].sum()
     total_profit = filtered_data["Profit"].sum()
