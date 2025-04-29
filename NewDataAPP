@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
+import altair as alt
 
 st.title("Data App Assignment, by Yanran Sun, on March 29th 2025")
 
@@ -63,7 +64,23 @@ if not filtered_data.empty:
     st.header("Sales Trend")
     # Pivot data for line chart
     pivot_data = filtered_data.pivot_table(index="Order_Date", columns="Sub_Category", values="Sales", aggfunc="sum").reset_index()
-    st.line_chart(pivot_data.set_index("Order_Date"))
+    # Melt the pivot table so Altair can handle multiple lines
+    melted_data = pivot_data.melt(id_vars=["Order_Date"], var_name="Sub_Category", value_name="Sales")
+    # Create line chart with trend line using Altair
+    chart = alt.Chart(melted_data).mark_line().encode(
+        x='Order_Date:T',
+        y='Sales:Q',
+        color='Sub_Category:N'
+    ).properties(
+        width=700,
+        height=400
+    )
+    # Add trend line (using LOESS smoothing)
+    trend = chart.transform_loess(
+        'Order_Date', 'Sales', groupby=['Sub_Category']
+    ).mark_line(strokeDash=[4,2], color='black', opacity=0.3)
+    # Combine chart and trend line
+    st.altair_chart(chart + trend, use_container_width=True)
 else:
     st.write("Please select Sub_Category to view the chart.")
 
